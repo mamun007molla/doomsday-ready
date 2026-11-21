@@ -6,6 +6,7 @@ function RewatchPlan() {
   const [selectedMovie, setSelectedMovie] = useState("");
   const [plan, setPlan] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [updatingMovieId, setUpdatingMovieId] = useState("");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -40,6 +41,53 @@ function RewatchPlan() {
       setLoading(false);
     }
   };
+
+  const handleToggleWatched = async (movie) => {
+    setError("");
+    setUpdatingMovieId(movie._id);
+
+    try {
+      const result = await api(`/movies/${movie._id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          watched: !movie.watched,
+        }),
+      });
+
+      const updatedMovie = result.data;
+
+      // Update the movie list
+      setMovies((prev) =>
+        prev.map((item) => (item._id === movie._id ? updatedMovie : item)),
+      );
+
+      // Update the current rewatch plan
+      setPlan((prev) => ({
+        ...prev,
+        rewatchOrder: prev.rewatchOrder.map((item) =>
+          item._id === movie._id ? updatedMovie : item,
+        ),
+      }));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUpdatingMovieId("");
+    }
+  };
+
+  // Calculate watched movies and remaining runtime
+  const rewatchOrder = plan?.rewatchOrder || [];
+
+  const watchedCount = rewatchOrder.filter((movie) => movie.watched).length;
+
+  const totalMovies = rewatchOrder.length;
+
+  const progressPercentage =
+    totalMovies > 0 ? Math.round((watchedCount / totalMovies) * 100) : 0;
+
+  const totalUnwatchedRuntime = rewatchOrder
+    .filter((movie) => !movie.watched)
+    .reduce((total, movie) => total + movie.runtime, 0);
 
   return (
     <div>
@@ -84,37 +132,81 @@ function RewatchPlan() {
         <div className="mt-8 bg-slate-800 border border-slate-700 rounded-xl p-6">
           <h2 className="text-xl font-semibold mb-5">Your Rewatch Order</h2>
 
+          {/* Progress Section */}
+          <div className="mb-6 bg-slate-900 rounded-lg p-4">
+            <div className="flex justify-between mb-2">
+              <p className="text-slate-300">Watching Progress</p>
+
+              <p className="font-semibold">
+                {watchedCount} of {totalMovies} watched
+              </p>
+            </div>
+
+            <div className="w-full bg-slate-700 rounded-full h-3">
+              <div
+                className="bg-green-500 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+
+            <p className="text-sm text-slate-400 mt-2">
+              {progressPercentage}% completed
+            </p>
+          </div>
+
+          {/* Statistics */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="bg-slate-900 rounded-lg p-4">
               <p className="text-slate-400 text-sm">Watched Movies</p>
-              <p className="text-2xl font-bold mt-1">{plan.watchedCount}</p>
+              <p className="text-2xl font-bold mt-1">{watchedCount}</p>
             </div>
 
             <div className="bg-slate-900 rounded-lg p-4">
               <p className="text-slate-400 text-sm">Unwatched Runtime</p>
               <p className="text-2xl font-bold mt-1">
-                {plan.totalUnwatchedRuntime} min
+                {totalUnwatchedRuntime} min
               </p>
             </div>
           </div>
 
-          {plan.rewatchOrder?.length > 0 ? (
+          {/* Rewatch List */}
+          {rewatchOrder.length > 0 ? (
             <ol className="space-y-3">
-              {plan.rewatchOrder.map((movie, index) => (
+              {rewatchOrder.map((movie, index) => (
                 <li
                   key={movie._id}
                   className="bg-slate-900 rounded-lg p-4 flex items-center gap-4"
                 >
-                  <span className="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold">
+                  <span className="bg-blue-600 rounded-full w-8 h-8 flex items-center justify-center font-bold shrink-0">
                     {index + 1}
                   </span>
 
-                  <div>
-                    <p className="font-semibold">{movie.title}</p>
+                  <div className="flex-1 min-w-0">
+                    <p
+                      className={`font-semibold ${
+                        movie.watched
+                          ? "text-green-400 line-through"
+                          : "text-white"
+                      }`}
+                    >
+                      {movie.title}
+                    </p>
+
                     <p className="text-sm text-slate-400">
                       {movie.releaseYear} · {movie.runtime} minutes
                     </p>
                   </div>
+
+                  <label className="flex items-center gap-2 text-sm text-slate-300 shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={movie.watched}
+                      disabled={updatingMovieId === movie._id}
+                      onChange={() => handleToggleWatched(movie)}
+                      className="w-5 h-5 accent-green-500 cursor-pointer"
+                    />
+                    Watched
+                  </label>
                 </li>
               ))}
             </ol>

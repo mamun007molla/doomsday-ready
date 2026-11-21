@@ -28,6 +28,8 @@ function Movies() {
   };
 
   const handleToggleWatched = async (movie) => {
+    setError("");
+
     try {
       const result = await api(`/movies/${movie._id}`, {
         method: "PATCH",
@@ -44,8 +46,25 @@ function Movies() {
     }
   };
 
+  const handleUpdatePrerequisites = async (movieId, prerequisites) => {
+    setError("");
+
+    try {
+      const result = await api(`/movies/${movieId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ prerequisites }),
+      });
+
+      setMovies((prev) =>
+        prev.map((item) => (item._id === movieId ? result.data : item)),
+      );
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    }
+  };
+
   if (loading) return <p>Loading movies...</p>;
-  if (error) return <p className="text-red-400">{error}</p>;
 
   return (
     <div>
@@ -53,6 +72,8 @@ function Movies() {
         <h1 className="text-3xl font-bold">Movies</h1>
         <p className="text-slate-400 mt-2">Manage your movie collection.</p>
       </div>
+
+      {error && <p className="text-red-400 mb-4">{error}</p>}
 
       <div className="mb-8">
         <AddMovieForm onMovieAdded={handleMovieAdded} />
@@ -63,7 +84,9 @@ function Movies() {
           <MovieCard
             key={movie._id}
             movie={movie}
+            movies={movies}
             onToggleWatched={handleToggleWatched}
+            onUpdatePrerequisites={handleUpdatePrerequisites}
           />
         ))}
       </div>
