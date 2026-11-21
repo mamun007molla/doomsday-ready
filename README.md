@@ -198,17 +198,33 @@ npm test
 
 ## AI Usage Disclosure
 
-AI tools were used as learning and development assistants during this project.
+I used ChatGPT as an AI-assisted development and learning tool during this project. My approach was to work step by step rather than asking AI to generate the entire application in a single prompt.
 
-They helped with:
+### How I Used AI
 
-- Understanding the assessment requirements.
-- Planning the project structure.
-- Explaining MERN stack concepts and implementation steps.
-- Reviewing code and debugging errors.
-- Suggesting test cases and documentation improvements.
+- **Requirement Analysis and Planning:** I provided the assessment requirements and instructed ChatGPT to break the project into smaller development tasks so I could complete and understand them progressively.
 
-The project was developed step by step while reviewing, implementing, and testing the code. The core graph traversal and dynamic programming logic were implemented and tested as part of the project work.
+- **Project Structure:** I chose the MERN stack and used AI guidance to organize the folder structure and follow an MVC-based backend architecture.
+
+- **Backend Development:** I worked through the backend implementation step by step, using AI explanations and suggestions to understand database models, API routes, controllers, services, validation, and error handling.
+
+- **Graph Algorithm:** I received AI assistance to understand graph concepts, Depth-First Search (DFS), visited sets, cycle detection, and prerequisite ordering for the movie rewatch feature.
+
+- **Dynamic Programming:** I used AI guidance to understand the minimum-bundle booking problem, the bottom-up Dynamic Programming approach, and how to reconstruct the selected bundle combination.
+
+- **Frontend Development:** I used AI assistance to implement portions of the React frontend, including the Movies, Rewatch Plan, and Booking views, and to connect these views with the backend APIs.
+
+- **Debugging and Testing:** I ran the application, tested API endpoints, checked expected results, shared errors when needed, and used AI suggestions to troubleshoot and improve the implementation.
+
+- **Documentation:** I used AI assistance to organize the README, document the project structure, and prepare setup instructions.
+
+### My Involvement
+
+I selected the technology stack, provided instructions for each development stage, configured the project environment and database, followed the implementation process, ran the application, tested the APIs and features, reviewed the results, and made development decisions throughout the project.
+
+I used AI as a supporting tool for explanations, implementation assistance, debugging, and problem-solving. Some portions of the implementation, including frontend code and algorithm-related code, were generated or suggested with AI assistance. I reviewed and tested the resulting functionality during development.
+
+My goal was not only to complete the assessment but also to understand the technologies, architecture, and problem-solving approaches used in the application.
 
 ## Author
 
