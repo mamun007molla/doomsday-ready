@@ -144,7 +144,7 @@ Create a `.env` file inside the backend folder:
 
 ```env
 PORT=5000
-MONGODB_URI=your_mongodb_connection_string
+DB_URI=your_mongodb_connection_string
 ```
 
 Start the backend:
