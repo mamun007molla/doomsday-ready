@@ -226,6 +226,40 @@ I used AI as a supporting tool for explanations, implementation assistance, debu
 
 My goal was not only to complete the assessment but also to understand the technologies, architecture, and problem-solving approaches used in the application.
 
+## Docker Compose
+
+### Prerequisites
+
+- Docker
+- Docker Compose
+
+### Run the Project
+
+Clone the repository and open the project root directory.
+
+Start all services with:
+
+```bash
+docker compose up --build
+```
+
+The services will be available at:
+
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:5000
+- API Health Check: http://localhost:5000/api/health
+- MongoDB: localhost:27017
+
+### Stop the Project
+
+Press `Ctrl + C`, then run:
+
+```bash
+docker compose down
+```
+
+MongoDB data is stored in a Docker volume named `mongo-data`.
+
 ## Author
 
 Mamun Molla
