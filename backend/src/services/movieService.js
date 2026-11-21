@@ -1,5 +1,5 @@
 import Movie from "../models/Movie.js";
-import { wouldCreateCycle } from "../utils/graphUtils.js";
+import { wouldCreateCycle, getRewatchOrder } from "../utils/graphUtils.js";
 
 export const createMovie = async (movieData) => {
   const movie = await Movie.create(movieData);
@@ -49,4 +49,36 @@ export const updateMovie = async (movieId, updateData) => {
   });
 
   return movie;
+};
+
+// Get rewatch order for a movie
+export const getMovieRewatchOrder = async (movieId) => {
+  const movies = await Movie.find()
+    .select("_id title releaseYear runtime watched prerequisites")
+    .lean();
+
+  // Check whether target movie exists
+  const targetMovie = movies.find((movie) => movie._id.toString() === movieId);
+
+  if (!targetMovie) {
+    return null;
+  }
+
+  // Build dependency graph
+  const graph = new Map(
+    movies.map((movie) => [
+      movie._id.toString(),
+      movie.prerequisites.map((id) => id.toString()),
+    ]),
+  );
+
+  // Get prerequisite IDs in correct order
+  const orderedIds = getRewatchOrder(movieId, graph);
+
+  // Convert IDs into movie objects
+  const movieMap = new Map(
+    movies.map((movie) => [movie._id.toString(), movie]),
+  );
+
+  return orderedIds.map((id) => movieMap.get(id));
 };

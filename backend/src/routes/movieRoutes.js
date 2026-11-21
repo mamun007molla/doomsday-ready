@@ -5,6 +5,7 @@ import {
   getAllMovies,
   getMovieById,
   updateMovie,
+  getMovieRewatchOrder,
 } from "../controllers/movieController.js";
 
 const router = express.Router();
@@ -16,5 +17,7 @@ router.get("/", getAllMovies);
 router.get("/:id", getMovieById);
 
 router.patch("/:id", updateMovie);
+
+router.get("/:id/rewatch-order", getMovieRewatchOrder);
 
 export default router;

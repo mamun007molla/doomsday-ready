@@ -41,3 +41,32 @@ export const wouldCreateCycle = (movieId, prerequisites, graph) => {
 
   return false;
 };
+
+export const getRewatchOrder = (movieId, graph) => {
+  const visited = new Set();
+  const result = [];
+
+  const dfs = (currentId) => {
+    if (visited.has(currentId)) {
+      return;
+    }
+
+    visited.add(currentId);
+
+    const dependencies = graph.get(currentId) || [];
+
+    for (const dependencyId of dependencies) {
+      dfs(dependencyId);
+    }
+
+    result.push(currentId);
+  };
+
+  const prerequisites = graph.get(movieId) || [];
+
+  for (const prerequisiteId of prerequisites) {
+    dfs(prerequisiteId);
+  }
+
+  return result;
+};

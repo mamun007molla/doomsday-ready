@@ -67,3 +67,33 @@ export const updateMovie = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getMovieRewatchOrder = async (req, res, next) => {
+  try {
+    const result = await movieService.getMovieRewatchOrder(req.params.id);
+
+    if (result === null) {
+      return res.status(404).json({
+        success: false,
+        message: "Movie not found",
+      });
+    }
+
+    const watchedCount = result.filter((movie) => movie.watched).length;
+
+    const totalUnwatchedRuntime = result
+      .filter((movie) => !movie.watched)
+      .reduce((total, movie) => total + movie.runtime, 0);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        rewatchOrder: result,
+        watchedCount,
+        totalUnwatchedRuntime,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
